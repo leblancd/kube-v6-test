@@ -52,7 +52,7 @@ Kubernetes e2e test code:
 ## e2e Test Command Line
 
 ```
-go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Internet|Federation|"preserve source pod" --num-nodes=2"
+go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Internet|Federation|preserve\ssource\spod --num-nodes=2"
 ```
 
 ## Included Test Cases
