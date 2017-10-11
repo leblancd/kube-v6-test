@@ -74,7 +74,7 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 scp $KUBE_USER@$KUBE_MASTER:/home/$KUBE_USER/.kube/kubectl $HOME/.kube
 sudo cp $HOME/.kube/kubectl /bin/kubectl
 ```
-#### Confirm that you can connect from your build server to the Kubernetes API serve using kubectl:
+#### Confirm that you can access the Kubernetes API server from the build server using the kubectl client:
 ```
 some-user@build-server:~$ kubectl get nodes
 NAME            STATUS    ROLES     AGE       VERSION
@@ -85,7 +85,7 @@ some-user@build-server:~$
 ```
 If you don't get a response, check that you've copied the Kubernetes config file correctly from the kube-master  to $HOME/.kube/config (previous step), and check that you have the required routes from your build node to the Kubernetes API service IP.
 
-#### You should also be able to curl the Kubernetes API server:
+#### You should also be able to curl the Kubernetes API server from the build server:
 ```
 some-user@build-server:~$ curl -g [fd00:1234::1]:443 | od -c -a
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -96,6 +96,7 @@ some-user@build-server:~$ curl -g [fd00:1234::1]:443 | od -c -a
 0000007
 some-user@build-server:~$
 ```
+If you don't get a response, check that you've have the required routes from your build node to the Kubernetes API service IP.
 
 #### Running the tests
 The e2e tests can be run as follows:
@@ -107,7 +108,6 @@ export KUBERNETES_CONFORMANCE_TEST=n
 cd $GOPATH/src/k8s.io/kubernetes
 go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod --num-nodes=2"
 ```
-
 An explanation of some of the fields used in this command set:
 ```
 - Kubernetes API Service IP:  fd00:1234::1
