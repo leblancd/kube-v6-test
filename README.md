@@ -49,10 +49,77 @@ Kubernetes e2e test code:
 - [PR #53531](https://github.com/kubernetes/kubernetes/pull/53531)
 - [PR #53569](https://github.com/kubernetes/kubernetes/pull/53569)
 
-## e2e Test Command Line
+## Running the IPv6 Multi-node e2e Test Suite
 
+#### If you haven't already done so, copy the kubernetes config file and the kubectl binary from your kube-master to your build node
+
+The following assumes that you have password-less access to kube-master for user "kube" (but no scp access for root):
 ```
-go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Internet|Federation|preserve\ssource\spod --num-nodes=2"
+#!/bin/bash
+
+KUBE_USER=kube
+KUBE_MASTER=kube-master
+echo ssh into $KUBE_MASTER and copy Kubernetes config and kubectl to $KUBE_USER home directory
+ssh $KUBE_USER@$KUBE_MASTER << EOT
+mkdir -p /home/kube/.kube
+sudo yes | sudo cp -f /etc/kubernetes/admin.conf /home/$KUBE_USER/.kube/config
+sudo chown $(id -u):$(id -g) /home/$KUBE_USER/.kube/config
+sudo yes | sudo cp -f /bin/kubectl /home/$KUBE_USER/.kube
+EOT
+
+echo scp kubernetes config from $KUBE_MASTER to /home/$KUBE_USER/.kube/config
+mkdir -p $HOME/.kube
+scp $KUBE_USER@$KUBE_MASTER:/home/$KUBE_USER/.kube/config $HOME/.kube
+chown $(id -u):$(id -g) $HOME/.kube/config
+scp $KUBE_USER@$KUBE_MASTER:/home/$KUBE_USER/.kube/kubectl $HOME/.kube
+sudo cp $HOME/.kube/kubectl /bin/kubectl
+```
+#### Confirm that you can connect from your build server to the Kubernetes API serve using kubectl:
+```
+some-user@build-server:~$ kubectl get nodes
+NAME            STATUS    ROLES     AGE       VERSION
+kube-master     Ready     master    6d        v1.9.0-alpha.0.ipv6.0.1+23df37a5a1b7d7-dirty
+kube-minion-1   Ready     <none>    6d        v1.9.0-alpha.0.ipv6.0.1+23df37a5a1b7d7-dirty
+kube-minion-2   Ready     <none>    6d        v1.9.0-alpha.0.ipv6.0.1+23df37a5a1b7d7-dirty
+some-user@build-server:~$ 
+```
+If you don't get a response, check that you've copied the Kubernetes config file correctly from the kube-master  to $HOME/.kube/config (previous step), and check that you have the required routes from your build node to the Kubernetes API service IP.
+
+#### You should also be able to curl the Kubernetes API server:
+```
+some-user@build-server:~$ curl -g [fd00:1234::1]:443 | od -c -a
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    14    0    14    0     0    265      0 --:--:-- --:--:-- --:--:--   269
+0000000 025 003 001  \0 002 002  \n
+        nak etx soh nul stx stx  nl
+0000007
+some-user@build-server:~$
+```
+
+#### Running the tests
+The e2e tests can be run as follows:
+```
+export KUBECONFIG=/home/openstack/.kube/config
+export KUBE_MASTER=local
+export KUBE_MASTER_IP="[fd00:1234::1]:443"
+export KUBERNETES_CONFORMANCE_TEST=n
+cd $GOPATH/src/k8s.io/kubernetes
+go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod --num-nodes=2"
+```
+
+An explanation of some of the fields used in this command set:
+```
+- Kubernetes API Service IP:  fd00:1234::1
+- INCLUDE test cases with the following phrases/words in their descriptions:
+  - "Networking"
+  - "Services"
+- But EXCLUDE test cases with the following phrases/words in their descriptions:
+  - "IPv4"
+  - "Networking-Performance"
+  - "Federation"
+  - "preserve source pod"
+- Number of worker nodes to use for testing: 2 (Min required for some service tests)
 ```
 
 ## Included Test Cases
