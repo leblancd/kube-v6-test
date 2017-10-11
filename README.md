@@ -9,6 +9,29 @@ It is expected that the list of test cases that are included in this suite will 
 - Is it a meaningful test of IPv6 functionality?
 - Is it fairly quick to run? (important for keeping CI test queues reasonable)
 
+#### Disabling IPv4-Specific Test Cases for IPv6 Testing
+If there is an IPv4-specific Kubernetes e2e networking test case that should be excluded from testing on an IPv6-only cluster, then the test should be marked as being an IPv4 test case by adding the following tag in the test description:
+```
+[Feature:Networking-IPv4]
+```
+For example, there is a 'ping 8.8.8.8' test that has been disabled for IPv6 testing as follows:
+```
+It("should provide Internet connection for containers [Feature:Networking-IPv4]", func() {
+```
+Any tests with this tag can be excluded from e2e testing by including "IPv4" as part of the --ginkgo.skip regular expression on the e2e test command line (see "e2e Test Command Line" below).
+
+
+#### Disabling IPv6-Specific Test Cases for IPv4-only Testing
+Conversely, if there is an IPv6-specific Kubernetes e2e networking test case that should be excluded from testing on an IPv4-only cluster, then the test case should be marked with the following tag in the test description:
+```
+[Feature:Networking-IPv6][Experimental]
+```
+For example:
+```
+It("should provide Internet connection for containers [Feature:Networking-IPv6][Experimental]", func() {
+```
+Any test with this tag can be excluded from e2e testing by including "IPv6" as part of the --ginkgo.skip regular expression on the e2e test command line (see "e2e Test Command Line" below).
+
 ## Required PRs
 There are still some outstanding, not-yet-merged Kubernetes pull requests that are required for running the test suite:
 
