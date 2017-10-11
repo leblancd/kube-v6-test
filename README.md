@@ -9,7 +9,7 @@ It is expected that the list of test cases that are included in this suite will 
 - Is it a meaningful test of IPv6 functionality?
 - Is it fairly quick to run? (important for keeping CI test queues reasonable)
 
-#### Disabling IPv4-Specific Test Cases for IPv6 Testing
+## Disabling IPv4-Specific Test Cases for IPv6 Testing
 If there is an IPv4-specific Kubernetes e2e networking test case that should be excluded from testing on an IPv6-only cluster, then the test should be marked as being an IPv4 test case by adding the following tag in the test description:
 ```
 [Feature:Networking-IPv4]
@@ -21,7 +21,7 @@ It("should provide Internet connection for containers [Feature:Networking-IPv4]"
 Any tests with this tag can be excluded from e2e testing by including "IPv4" as part of the --ginkgo.skip regular expression on the e2e test command line (see "e2e Test Command Line" below).
 
 
-#### Disabling IPv6-Specific Test Cases for IPv4-only Testing
+## Disabling IPv6-Specific Test Cases for IPv4-only Testing
 Conversely, if there is an IPv6-specific Kubernetes e2e networking test case that should be excluded from testing on an IPv4-only cluster, then the test case should be marked with the following tag in the test description:
 ```
 [Feature:Networking-IPv6][Experimental]
@@ -52,10 +52,12 @@ Kubernetes e2e test code:
 ## e2e Test Command Line
 
 ```
-go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking --ginkgo.skip=IPv4|Networking-Performance|Internet --num-nodes=2"
+go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Internet|Federation|"preserve source pod" --num-nodes=2"
 ```
 
 ## Included Test Cases
+
+## NOTE: THE LIST BELOW NEEDS UPDATING: ABOUT 14 PASSING TEST CASES ARE MISSING
 
 #### Network Connectivity Test Cases:
 
@@ -64,6 +66,7 @@ go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd
 - should function for intra-pod communication: udp [Conformance]
 - should function for intra-pod communication: http [Conformance]
 - should provide unchanging, static URL paths for kubernetes api services
+- should provide Internet connection for containers [Feature:Networking-IPv6][Experimental]
 
 #### Services Test Cases:
 
@@ -78,4 +81,11 @@ go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd
 - should function for pod-Service: http
 - should update endpoints: http
 - should update nodePort: udp [Slow]
+
+## Wish List (Failing Tests That Would be Good to Have Fixed)
+
+- [sig-network] DNS [It] should provide DNS for services [Conformance] 
+- [sig-network] Services [It] should preserve source pod IP for traffic thru service cluster IP 
+- [sig-network] ServiceLoadBalancer [Feature:ServiceLoadBalancer] 
+  should support simple GET on Ingress ips
 
