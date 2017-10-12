@@ -162,3 +162,4 @@ An explanation of some of the fields used in this command set:
 | **DNS** | [It] *should provide DNS for services* [Conformance] |
 | **Services** | [It] *should preserve source pod IP for traffic thru service cluster IP* |
 | **Service<br>LoadBalancer** | [It] *should support simple GET on Ingress ips* [Feature:ServiceLoadBalancer] |
+| **NEW TEST TO<br>BE WRITTEN** | [It] *should support kube-dns probes of type SRV [Feature:KubeDNS] |
