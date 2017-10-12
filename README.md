@@ -123,8 +123,8 @@ An explanation of some of the fields used in this command set:
 ```
 
 ## Included Test Cases
-| Test Type | Description | Sample<br>Test Time<br>(seconds) |
-|:---------:|-------------|---------------------------------:|
+| Test Type | Description | Sample<br>Test Time<br>(seconds)\* |
+|:---------:|-------------|-----------------------------------:|
 | **Connectivity** | [It] *should function for node-pod communication: udp* [Conformance] | 63.557 |
 | **Connectivity** | [It] *should function for node-pod communication: http* [Conformance] | 61.757 |
 | **Connectivity** | [It] *should function for intra-pod communication: http* [Conformance] | 55.885 |
@@ -155,6 +155,8 @@ An explanation of some of the fields used in this command set:
 | **Services** | [It] *should function for endpoint-Service: http* | 73.971 |
 | **Services** | [It] *should function for endpoint-Service: udp* | 82.004 |
 | **Services** | [It] *should serve a basic endpoint from pods* [Conformance] | 61.248 |
+
+\* Sample test times are a rough guideline. These test times were taken on a fairly slow virtualized Kubernetes cluster: CentOS VirtualBox guests on an Ubuntu 16.04 host.
 
 ## Wish List (Failing Tests That Would be Good to Have Fixed)
 | Test Type | Description |
