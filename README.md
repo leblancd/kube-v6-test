@@ -157,7 +157,7 @@ An explanation of some of the fields used in this command set:
 | [It] *should function for endpoint-Service: http* | 73.971 |
 | [It] *should function for endpoint-Service: udp* | 82.004 |
 | [It] *should serve a basic endpoint from pods* [Conformance] | 61.248 |
-|----------------------------------------------------------------------------- **TOTAL TEST TIME:** | **28 min 25 secs** |
+|--------------------------------------------------------------- **TOTAL TEST TIME:** | **28 min 25 secs** |
 
 \* Sample test times are a rough guideline. These test times were taken on a fairly slow virtualized Kubernetes cluster: CentOS VirtualBox guests on an Ubuntu 16.04 host.
 
