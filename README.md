@@ -123,43 +123,46 @@ An explanation of some of the fields used in this command set:
 ```
 
 ## Included Test Cases
-| Test Type | Description | Sample<br>Test Time<br>(seconds)\* |
-|:---------:|-------------|-----------------------------------:|
-| **Connectivity** | [It] *should function for node-pod communication: udp* [Conformance] | 63.557 |
-| **Connectivity** | [It] *should function for node-pod communication: http* [Conformance] | 61.757 |
-| **Connectivity** | [It] *should function for intra-pod communication: http* [Conformance] | 55.885 |
-| **Connectivity** | [It] *should function for intra-pod communication: udp* [Conformance] | 59.329 |
-| **Connectivity** | [It] *should provide unchanging, static URL paths for kubernetes api services* | 9.420 |
-| **Connectivity** | [It] *should provide Internet connection for containers*<br>[Feature:Networking-IPv6][Experimental] | 19.131 |
-| **Services** | [It] *should function for pod-Service: udp* | 66.270 |
-| **Services** | [It] *should be able to create a functioning NodePort service* | 25.542 |
-| **Services** | [It] *should be able to change the type from ExternalName to ClusterIP* | 8.993 |
-| **Services** | [It] *should update endpoints: udp* | 149.118 |
-| **Services** | [It] *should be able to change the type from ClusterIP to ExternalName* | 9.112 |
-| **Services** | [It] *should update nodePort: udp* [Slow] | 167.113 |
-| **Services** | [It] *should function for node-Service: http* | 68.807 |
-| **Services** | [It] *should check NodePort out-of-range* | 9.091 |
-| **Services** | [It] *should be able to change the type from ExternalName to NodePort* | 9.079 |
-| **Services** | [It] *should check kube-proxy urls* | 62.688 |
-| **Services** | [It] *should function for pod-Service: http* | 86.556 |
-| **Services** | [It] *should use same NodePort with same port but different protocols* | 9.205 |
-| **Services** | [It] *should serve multiport endpoints from pods* [Conformance] | 74.567 |
-| **Services** | [It] *should update nodePort: http* [Slow] | 152.895 |
-| **Services** | [It] *should release NodePorts on delete* | 17.233 |
-| **Services** | [It] *should be able to change the type from NodePort to ExternalName* | 9.308 |
-| **Services** | [It] *should function for node-Service: udp* | 91.738 |
-| **Services** | [It] *should update endpoints: http* | 155.233 |
-| **Services** | [It] *should prevent NodePort collisions* | 9.892 |
-| **Services** | [It] *should provide secure master service* [Conformance] | 9.044 |
-| **Services** | [It] *should create endpoints for unready pods* | 27.295 |
-| **Services** | [It] *should function for endpoint-Service: http* | 73.971 |
-| **Services** | [It] *should function for endpoint-Service: udp* | 82.004 |
-| **Services** | [It] *should serve a basic endpoint from pods* [Conformance] | 61.248 |
+| Description | Sample<br>Test Time<br>(seconds)\* |
+|-------------|-----------------------------------:|
+| **Network Connectivity Test Cases** ||
+| [It] *should function for node-pod communication: udp* [Conformance] | 63.557 |
+| [It] *should function for node-pod communication: http* [Conformance] | 61.757 |
+| [It] *should function for intra-pod communication: http* [Conformance] | 55.885 |
+| [It] *should function for intra-pod communication: udp* [Conformance] | 59.329 |
+| [It] *should provide unchanging, static URL paths for kubernetes api services* | 9.420 |
+| [It] *should provide Internet connection for containers*<br>[Feature:Networking-IPv6][Experimental] | 19.131 |
+| **Services Test Cases** ||
+| [It] *should function for pod-Service: udp* | 66.270 |
+| [It] *should be able to create a functioning NodePort service* | 25.542 |
+| [It] *should be able to change the type from ExternalName to ClusterIP* | 8.993 |
+| [It] *should update endpoints: udp* | 149.118 |
+| [It] *should be able to change the type from ClusterIP to ExternalName* | 9.112 |
+| [It] *should update nodePort: udp* [Slow] | 167.113 |
+| [It] *should function for node-Service: http* | 68.807 |
+| [It] *should check NodePort out-of-range* | 9.091 |
+| [It] *should be able to change the type from ExternalName to NodePort* | 9.079 |
+| [It] *should check kube-proxy urls* | 62.688 |
+| [It] *should function for pod-Service: http* | 86.556 |
+| [It] *should use same NodePort with same port but different protocols* | 9.205 |
+| [It] *should serve multiport endpoints from pods* [Conformance] | 74.567 |
+| [It] *should update nodePort: http* [Slow] | 152.895 |
+| [It] *should release NodePorts on delete* | 17.233 |
+| [It] *should be able to change the type from NodePort to ExternalName* | 9.308 |
+| [It] *should function for node-Service: udp* | 91.738 |
+| [It] *should update endpoints: http* | 155.233 |
+| [It] *should prevent NodePort collisions* | 9.892 |
+| [It] *should provide secure master service* [Conformance] | 9.044 |
+| [It] *should create endpoints for unready pods* | 27.295 |
+| [It] *should function for endpoint-Service: http* | 73.971 |
+| [It] *should function for endpoint-Service: udp* | 82.004 |
+| [It] *should serve a basic endpoint from pods* [Conformance] | 61.248 |
+|----------------------------------------------------------------------------- **TOTAL TEST TIME:** | **28 min 25 secs** |
 
 \* Sample test times are a rough guideline. These test times were taken on a fairly slow virtualized Kubernetes cluster: CentOS VirtualBox guests on an Ubuntu 16.04 host.
 
 ## Wish List (Failing Tests That Would be Good to Have Fixed)
-| Test Type | Description |
+| Test Area | Description |
 |:---------:|-------------|
 | **DNS** | [It] *should provide DNS for services* [Conformance] |
 | **Services** | [It] *should preserve source pod IP for traffic thru service cluster IP* |
