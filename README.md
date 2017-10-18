@@ -110,7 +110,7 @@ export KUBE_MASTER=local
 export KUBE_MASTER_IP="[fd00:1234::1]:443"
 export KUBERNETES_CONFORMANCE_TEST=n
 cd $GOPATH/src/k8s.io/kubernetes
-go run hack/e2e.go -- --provider=local -v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod --num-nodes=2"
+go run hack/e2e.go -- --provider=local --v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod --num-nodes=2"
 ```
 An explanation of some of the fields used in this command set:
 ```
