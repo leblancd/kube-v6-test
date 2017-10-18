@@ -3,6 +3,10 @@ This page describes a suite of Kubernetes e2e tests that can be used for Kuberne
 
 The test cases that are included in this suite are all "out-of-the-box" Kubernetes e2e test cases, that is, they are available upstream (although some require fixes from pull requests that have not yet been merged, as described below). Running this test suite is therefore a matter of providing the right test case filtering through the use of "--ginkgo.focus" and "--ginkgo.skip" regular expressions on the command line, as described in the [Kubernetes e2e test documentation](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md#end-to-end-testing-in-kubernetes), as well as a "--num-nodes=2" flag to run the Kubernetes services e2e tests that require 2 or more worker nodes.
 
+Some of the steps described below assume the topology shown in the following diagram, but certainly various topologies can be tested with slight variations in the steps:
+
+![Screenshot](kubernetes_ipv6_e2e_topology.png)
+
 ## The Evolving Test Suite
 It is expected that the list of test cases that are included in this suite will grow over time to improve test coverage and make the testing more comprehensive. Some things to consider before adding a test case:
 - Does the test work in an IPv6 cluster (is it debugged)?
