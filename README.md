@@ -110,7 +110,7 @@ export KUBE_MASTER=local
 export KUBE_MASTER_IP="[fd00:1234::1]:443"
 export KUBERNETES_CONFORMANCE_TEST=n
 cd $GOPATH/src/k8s.io/kubernetes
-go run hack/e2e.go -- --provider=local --v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod --num-nodes=2"
+go run hack/e2e.go -- --provider=local --v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod|session\saffinity:\sudp|functioning\sNodePort --num-nodes=2"
 ```
 An explanation of some of the fields used in this command set:
 ```
@@ -123,6 +123,8 @@ An explanation of some of the fields used in this command set:
   - "Networking-Performance"
   - "Federation"
   - "preserve source pod"
+  - "session affinity: udp"
+  - "functioning NodePort"
 - Number of worker nodes to use for testing: 2 (Min required for some service tests)
 ```
 
@@ -138,7 +140,6 @@ An explanation of some of the fields used in this command set:
 | [It] *should provide Internet connection for containers*<br>[Feature:Networking-IPv6][Experimental] | 19.131 |
 | **Services Test Cases** ||
 | [It] *should function for pod-Service: udp* | 66.270 |
-| [It] *should be able to create a functioning NodePort service* | 25.542 |
 | [It] *should be able to change the type from ExternalName to ClusterIP* | 8.993 |
 | [It] *should update endpoints: udp* | 149.118 |
 | [It] *should be able to change the type from ClusterIP to ExternalName* | 9.112 |
