@@ -53,6 +53,9 @@ Kubernetes e2e test code:
 - [PR #53531](https://github.com/kubernetes/kubernetes/pull/53531)
 - [PR #53569](https://github.com/kubernetes/kubernetes/pull/53569)
 
+## Guidelines for Instantiating an IPv6-Only Kubernetes Cluster
+For guilelines on how to instantiate an IPv6-only Kubernetes cluster refer to [kube-v6](https://github.com/leblancd/kube-v6) setup guidelines. These guidelines show how to use kubeadm with pre-built, IPv6-enabled binaries and hyperkube images from the [Kubernetes IPv6 v1.9.0-alpha.1.ipv6.1 Release](https://github.com/leblancd/kubernetes/releases/tag/v1.9.0-alpha.1.ipv6.1).
+
 ## Running the IPv6 Multi-node e2e Test Suite
 
 #### If you haven't already done so, copy the kubernetes config file and the kubectl binary from your kube-master to your build node
