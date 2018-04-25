@@ -1,7 +1,7 @@
 # kube-v6-test
-This page describes a suite of Kubernetes e2e tests that can be used for Kubernetes IPv6 Continuous Integration (CI) testing, or for testing IPv6 networking conformance on an IPv6-only, multi-node Kubernetes cluster.
+This page describes a suite of Kubernetes e2e tests that will be used for Kubernetes IPv6 Continuous Integration (CI) testing, and can also be used for testing IPv6 networking conformance on an IPv6-only, multi-node Kubernetes cluster.
 
-The test cases that are included in this suite are all "out-of-the-box" Kubernetes e2e test cases, that is, they are available upstream (although some require fixes from pull requests that have not yet been merged, as described below). Running this test suite is therefore a matter of providing the right test case filtering through the use of "--ginkgo.focus" and "--ginkgo.skip" regular expressions on the command line, as described in the [Kubernetes e2e test documentation](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md#end-to-end-testing-in-kubernetes), as well as a "--num-nodes=2" flag to run the Kubernetes services e2e tests that require 2 or more worker nodes.
+The test cases that are included in this suite are all "out-of-the-box" Kubernetes e2e test cases, that is, they are available upstream. Running this test suite is therefore a matter of providing the right test case filtering through the use of "--ginkgo.focus" and "--ginkgo.skip" regular expressions on the command line, as described in the [Kubernetes e2e test documentation](https://github.com/kubernetes/community/blob/master/contributors/devel/e2e-tests.md#end-to-end-testing-in-kubernetes), as well as a "--num-nodes=2" flag to run the Kubernetes services e2e tests that require 2 or more worker nodes.
 
 Some of the steps described below assume the topology shown in the following diagram, but certainly various topologies can be tested with slight variations in the steps:
 
@@ -24,7 +24,6 @@ It("should provide Internet connection for containers [Feature:Networking-IPv4]"
 ```
 Any tests with this tag can be excluded from e2e testing by including "IPv4" as part of the --ginkgo.skip regular expression on the e2e test command line (see "e2e Test Command Line" below).
 
-
 ## Disabling IPv6-Specific Test Cases for IPv4-only Testing
 Conversely, if there is an IPv6-specific Kubernetes e2e networking test case that should be excluded from testing on an IPv4-only cluster, then the test case should be marked with the following tag in the test description:
 ```
@@ -36,29 +35,12 @@ It("should provide Internet connection for containers [Feature:Networking-IPv6][
 ```
 Any test with this tag can be excluded from e2e testing by including "IPv6" as part of the --ginkgo.skip regular expression on the e2e test command line (see "e2e Test Command Line" below).
 
-## Required PRs
-There are still some outstanding, not-yet-merged Kubernetes pull requests that are required for running the test suite:
-
-Kubernetes operational code:
-- [PR #47621](https://github.com/kubernetes/kubernetes/pull/47621)
-- [PR #50929](https://github.com/kubernetes/kubernetes/pull/50929)
-- [PR #50478](https://github.com/kubernetes/kubernetes/pull/50478)
-- [PR #52033](https://github.com/kubernetes/kubernetes/pull/52033)
-- [PR #53555](https://github.com/kubernetes/kubernetes/pull/53555)
-
-Kubernetes e2e test code:
-- [PR #52748](https://github.com/kubernetes/kubernetes/pull/52748)
-- [PR #53384](https://github.com/kubernetes/kubernetes/pull/53384)
-- [PR #53389](https://github.com/kubernetes/kubernetes/pull/53389)
-- [PR #53531](https://github.com/kubernetes/kubernetes/pull/53531)
-- [PR #53569](https://github.com/kubernetes/kubernetes/pull/53569)
-
 ## Guidelines for Instantiating an IPv6-Only Kubernetes Cluster
-For guidelines on how to instantiate an IPv6-only Kubernetes cluster refer to [kube-v6](https://github.com/leblancd/kube-v6) setup guidelines. These guidelines show how to use kubeadm with pre-built, IPv6-enabled binaries and hyperkube images from the [Kubernetes IPv6 v1.9.0-alpha.1.ipv6.1 Release](https://github.com/leblancd/kubernetes/releases/tag/v1.9.0-alpha.1.ipv6.1).
+For guidelines on how to instantiate an IPv6-only Kubernetes cluster refer to [kube-v6](https://github.com/leblancd/kube-v6) setup guidelines.
 
-## Running the IPv6 Multi-node e2e Test Suite
+## Manually Running the IPv6 Multi-node e2e Test Suite on an IPv6-Only Kubernetes Cluster
 
-#### If you haven't already done so, copy the kubernetes config file and the kubectl binary from your kube-master to your build node
+#### If you haven't already done so, copy the kubernetes config file and the kubectl binary from your kube-master to a Linux host that will function as an external build/test server
 
 The following assumes that you have password-less access to kube-master for user "kube" (but no scp access for root):
 ```
@@ -113,7 +95,7 @@ export KUBE_MASTER=local
 export KUBE_MASTER_IP="[fd00:1234::1]:443"
 export KUBERNETES_CONFORMANCE_TEST=n
 cd $GOPATH/src/k8s.io/kubernetes
-go run hack/e2e.go -- --provider=local --v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|Networking-Performance|Federation|preserve\ssource\spod|session\saffinity:\sudp|functioning\sNodePort --num-nodes=2"
+go run hack/e2e.go -- --provider=local --v --test --test_args="--host=https://[fd00:1234::1]:443 --ginkgo.focus=Networking|Services --ginkgo.skip=IPv4|DNS|Federation|functioning\sNodePort|preserve\ssource\spod --num-nodes=2"
 ```
 An explanation of some of the fields used in this command set:
 ```
@@ -123,13 +105,19 @@ An explanation of some of the fields used in this command set:
   - "Services"
 - But EXCLUDE test cases with the following phrases/words in their descriptions:
   - "IPv4"
-  - "Networking-Performance"
+  - "DNS"
   - "Federation"
-  - "preserve source pod"
-  - "session affinity: udp"
   - "functioning NodePort"
+  - "preserve source pod"
 - Number of worker nodes to use for testing: 2 (Min required for some service tests)
 ```
+
+## Kubernetes IPv6 Continuous Integration (CI) Tests
+There is a Kubernetes pull request that is up for review for introducing pre-commit and post-commit Kubernetes IPv6 CI test jobs:
+
+https://github.com/kubernetes/test-infra/pull/7529
+
+Once this PR is merged, the Kubernetes IPv6 CI test jobs will run the test suite that is described in this documentation.
 
 ## Included Test Cases
 | Description | Sample<br>Test Time<br>(seconds)\* |
@@ -140,7 +128,6 @@ An explanation of some of the fields used in this command set:
 | [It] *should function for intra-pod communication: http* [Conformance] | 55.885 |
 | [It] *should function for intra-pod communication: udp* [Conformance] | 59.329 |
 | [It] *should provide unchanging, static URL paths for kubernetes api services* | 9.420 |
-| [It] *should provide Internet connection for containers*<br>[Feature:Networking-IPv6][Experimental] | 19.131 |
 | **Services Test Cases** ||
 | [It] *should function for pod-Service: udp* | 66.270 |
 | [It] *should be able to change the type from ExternalName to ClusterIP* | 8.993 |
@@ -160,22 +147,32 @@ An explanation of some of the fields used in this command set:
 | [It] *should function for node-Service: udp* | 91.738 |
 | [It] *should update endpoints: http* | 155.233 |
 | [It] *should prevent NodePort collisions* | 9.892 |
+| [It] *should transfer ~ 1GB onto the service endpoint 1 servers (maximum of 1 clients)* | 68.287 |
 | [It] *should provide secure master service* [Conformance] | 9.044 |
+| [It] *should be able to update NodePorts with two same port numbers but different protocols* | 6.273 |
 | [It] *should create endpoints for unready pods* | 27.295 |
 | [It] *should function for endpoint-Service: http* | 73.971 |
 | [It] *should function for endpoint-Service: udp* | 82.004 |
 | [It] *should serve a basic endpoint from pods* [Conformance] | 61.248 |
 | [It] *should function for client IP based session affinity: http* | 85.018 |
-|--------------------------------------------------------------- **TOTAL TEST TIME:** | **28 min 25 secs** |
+|--------------------------------------------------------------- **TOTAL TEST TIME:** | **30 min 20 secs** |
 
 \* Sample test times are a rough guideline. These test times were taken on a fairly slow virtualized Kubernetes cluster: CentOS VirtualBox guests on an Ubuntu 16.04 host.
 
-## Wish List (Failing Tests That Would be Good to Have Fixed)
+## Failing Tests that are Being Investigated
+| Test Area | Description | Comment/Issue |
+|:---------:|-------------|---------|
+| **DNS** | [It] *should provide DNS for services* [Conformance] | https://github.com/kubernetes/kubernetes/issues/62883 |
+| **Network Connectivity** | [It] *should provide Internet connection for containers*<br>[Feature:Networking-IPv6][Experimental] | Intermittently failing. Could be collateral damage from a kube-dns crash loop |
+
+## Tests that Are Being Skipped Since They are not Appropriate
+| Test Area | Description | Comment |
+|:---------:|-------------|---------|
+| **Services** | [It] *should preserve source pod IP for traffic thru service cluster IP* | Masquerading is enabled in Bridge CNI plugin, so pod source IPs will not be preserved |
+| **Services** | [It] *should be able to create a functioning NodePort service* | For testing on a GCE instance, only IPv4 external IPs are available. Therefore, stateless NAT46 would be required to test NodePort service on an IPv6-only cluster using an external, IPv4 address. |
+
+## Wish List (Failing/New Tests That Would be Good to Have Fixed/Added)
 | Test Area | Description |
 |:---------:|-------------|
-| **DNS** | [It] *should provide DNS for services* [Conformance] |
-| **Services** | [It] *should preserve source pod IP for traffic thru service cluster IP* |
-| **Services** | [It] *should function for client IP based session affinity: udp* |
-| **Services** | [It] *should be able to create a functioning NodePort service* |
 | **Service<br>LoadBalancer** | [It] *should support simple GET on Ingress ips* [Feature:ServiceLoadBalancer] |
 | **NEW TEST TO<br>BE WRITTEN** | [It] *should support kube-dns probes of type SRV* [Feature:KubeDNS] |
